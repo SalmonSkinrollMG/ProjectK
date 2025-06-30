@@ -75,3 +75,9 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Ignore IDE-specific folder
+.idea/.idea.ProjectK.dir/
+
+# Ignore HoloLens platform config
+Platforms/HoloLens/
