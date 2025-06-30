@@ -2,6 +2,7 @@
 
 
 #include "PKAssetManager.h"
+#include "AbilitySystemGlobals.h"
 #include "Misc/PKGameplayTags.h"
 
 UPKAssetManager& UPKAssetManager::Get()
@@ -16,4 +17,7 @@ void UPKAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
 	FPKGameplayTags::InitializeNativeGameplayTags();
+
+	//Not necessary after ue5.3
+	//UAbilitySystemGlobals::Get().InitGlobalData();
 }

@@ -21,4 +21,7 @@ protected:
 
 	UPROPERTY(EditAnywhere , BlueprintReadOnly)
 	TSubclassOf<APKProjectile> ProjectileClass;
+
+	UFUNCTION(BlueprintCallable , Category="AbilitiesTasks|Firebolt")
+	void SpawnProjectileAtSocket();
 };
