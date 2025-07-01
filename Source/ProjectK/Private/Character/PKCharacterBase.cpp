@@ -5,10 +5,14 @@
 #include "GameplayEffect.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/PKAbilitySystemComponent.h"
+#include "Components/CapsuleComponent.h"
 
 APKCharacterBase::APKCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera , ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera , ECR_Ignore);
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMeshMesh");
 	WeaponMesh->SetupAttachment(GetMesh() , WeaponAttachmentSocket);

@@ -57,6 +57,8 @@ void APKPlayerController::SetupInputComponent()
 	UPKEnhancedInputComponent* PKEnhancedInputComponent = CastChecked<UPKEnhancedInputComponent>(InputComponent);
 
 	PKEnhancedInputComponent->BindAction(MoveAction , ETriggerEvent::Triggered , this , &APKPlayerController::Move);
+	PKEnhancedInputComponent->BindAction(ShiftAction , ETriggerEvent::Started , this , &APKPlayerController::ShiftKeyPressed);
+	PKEnhancedInputComponent->BindAction(ShiftAction , ETriggerEvent::Completed , this , &APKPlayerController::ShiftKeyReleased);
 
 	PKEnhancedInputComponent->BindAbilityActions(InputConfig, this,
 		&APKPlayerController::AbilityInputPressed,
@@ -156,18 +158,15 @@ void APKPlayerController::AbilityInputReleased(FGameplayTag Tag)
 	{
 		if (GetAbilitySystemComponent())
 		{
-			AbilitySystemComponent->AbilityInputTagHeld(Tag);
+			AbilitySystemComponent->AbilityInputTagReleased(Tag);
 		}
 		return;
 	}
-	if (bTargeting)
+	if (GetAbilitySystemComponent())
 	{
-		if (GetAbilitySystemComponent())
-		{
-			AbilitySystemComponent->AbilityInputTagHeld(Tag);
-		}
+		AbilitySystemComponent->AbilityInputTagReleased(Tag);
 	}
-	else
+	if (!bTargeting && !bShiftKeyPressed)
 	{
 		const APawn* ControlledPawn = GetPawn();
 		if (ControlledPawn && FollowTime <= ShortPressedThreshold)
@@ -187,6 +186,7 @@ void APKPlayerController::AbilityInputReleased(FGameplayTag Tag)
 		FollowTime = false;
 		bTargeting = false;
 	}
+	
 }
 
 void APKPlayerController::AbilityInputHeld(const FGameplayTag Tag)
@@ -199,7 +199,7 @@ void APKPlayerController::AbilityInputHeld(const FGameplayTag Tag)
 		}
 		return;
 	}
-	if (bTargeting)
+	if (bTargeting || bShiftKeyPressed)
 	{
 		if (GetAbilitySystemComponent())
 		{

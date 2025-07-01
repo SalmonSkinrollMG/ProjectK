@@ -14,7 +14,7 @@ void UPKProjectileAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UPKProjectileAbility::SpawnProjectileAtSocket()
+void UPKProjectileAbility::SpawnProjectileTowardsTarget(const FVector& TargetLocation)
 {
 	bool bHasAuthority = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bHasAuthority)
@@ -24,8 +24,11 @@ void UPKProjectileAbility::SpawnProjectileAtSocket()
 	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 	{
 		const FVector SocketLocation = CombatInterface->GetCombatSocketVector();
+		FRotator SpawnRotation = (TargetLocation - SocketLocation).Rotation();
+		SpawnRotation.Pitch = 0.0f; // parallel to the Ground;
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
+		SpawnTransform.SetRotation(SpawnRotation.Quaternion());
 		
 		APKProjectile* Projectile = GetWorld()->SpawnActorDeferred<APKProjectile>(ProjectileClass,
 			SpawnTransform,

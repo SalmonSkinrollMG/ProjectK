@@ -37,6 +37,9 @@ private:
 	UPROPERTY(EditAnywhere , Category = "Input")
 	TObjectPtr<UInputAction> MoveAction;
 
+	UPROPERTY(EditAnywhere , Category = "Input")
+	TObjectPtr<UInputAction> ShiftAction;
+
 	void Move(const FInputActionValue& InputValue);
 	void HighlightActors(const FHitResult& HitResult);
 	void HitUnderCursor();
@@ -71,7 +74,11 @@ private:
 	
 	bool bTargeting = false;
 	bool bAutoRunning = false;
-	
+
+
+	void ShiftKeyPressed(){ bShiftKeyPressed = true; }
+	void ShiftKeyReleased(){ bShiftKeyPressed = false; }
+	bool bShiftKeyPressed = false;
 };
 
 

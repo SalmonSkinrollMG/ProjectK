@@ -23,5 +23,5 @@ protected:
 	TSubclassOf<APKProjectile> ProjectileClass;
 
 	UFUNCTION(BlueprintCallable , Category="AbilitiesTasks|Firebolt")
-	void SpawnProjectileAtSocket();
+	void SpawnProjectileTowardsTarget(const FVector& TargetLocation);
 };
