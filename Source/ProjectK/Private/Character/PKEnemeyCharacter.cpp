@@ -5,6 +5,8 @@
 #include "AbilitySystem/PKAbilitySystemComponent.h"
 #include "AbilitySystem/PkAttributeSet.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Misc/PKGameplayTags.h"
 #include "ProjectK/ProjectK.h"
 #include "UI/Widgets/PKUserWidget.h"
 
@@ -25,9 +27,16 @@ APKEnemeyCharacter::APKEnemeyCharacter()
 }
 
 
+UAnimMontage* APKEnemeyCharacter::GetHitAnimMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
 void APKEnemeyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+	
 	InitAbilityActorInfo();
 
 	/*
@@ -54,7 +63,18 @@ void APKEnemeyCharacter::BeginPlay()
 			OnHealthAttributeUpdated.Broadcast(Data.NewValue);
 		}
 	);
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FPKGameplayTags::Get().Internal_Effects_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
+	this,
+	&APKEnemeyCharacter::OnHitReactTagAdded
+	);
 	
+}
+
+void APKEnemeyCharacter::OnHitReactTagAdded(const FGameplayTag IncomingTag, int32 count)
+{
+	bHitReacting = count > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.0f : BaseWalkSpeed;
 }
 
 void APKEnemeyCharacter::HighlightActor()

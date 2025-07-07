@@ -12,6 +12,7 @@ class UGameplayAbility;
 class UAttributeSet;
 class UAbilitySystemComponent;
 class UGameplayEffect;
+class UAnimMontage;
 
 UCLASS(abstract)
 class PROJECTK_API APKCharacterBase : public ACharacter , public IAbilitySystemInterface , public ICombatInterface
@@ -50,6 +51,10 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttribute;
 	UPROPERTY(EditAnywhere , BlueprintReadOnly , Category= "GamePlayAbilitySystem|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultMetaAttribute;
+
+
+	UPROPERTY(EditAnywhere , BlueprintReadOnly , Category= "Animation | Montages")
+	UAnimMontage* HitReactMontage;
 
 	UFUNCTION(BlueprintCallable)
 	void InitializeDefaultAttributes();

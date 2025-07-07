@@ -193,6 +193,13 @@ public:
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UPkAttributeSet, MaxHealth);
 
+	/*
+	 * Internal / Temporary Attributes
+	 */
+	UPROPERTY(BlueprintReadOnly, Category = "Internal")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UPkAttributeSet, IncomingDamage);
+
 
 	//---------------------------------------------OnReps----------------------------------------------//
 

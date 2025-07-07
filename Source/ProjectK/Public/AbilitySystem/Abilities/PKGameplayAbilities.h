@@ -17,4 +17,7 @@ class PROJECTK_API UPKGameplayAbilities : public UGameplayAbility
 public:
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag StartupInputTag;
+
+	UPROPERTY(EditDefaultsOnly)
+	FScalableFloat ScalableFloat;
 };

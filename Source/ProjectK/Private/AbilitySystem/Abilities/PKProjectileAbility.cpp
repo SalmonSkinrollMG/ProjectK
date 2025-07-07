@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "Actors/PKProjectile.h"
 #include "Interface/CombatInterface.h"
+#include "Misc/PKGameplayTags.h"
 
 void UPKProjectileAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                            const FGameplayAbilityActorInfo* ActorInfo,
@@ -40,6 +41,8 @@ void UPKProjectileAbility::SpawnProjectileTowardsTarget(const FVector& TargetLoc
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningActorFromActorInfo());
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(ProjectileEffect , GetAbilityLevel() , SourceASC->MakeEffectContext());
 		Projectile->EffectSpecHandle = SpecHandle;
+		float Magnitude = ScalableFloat.GetValueAtLevel(GetAbilityLevel());
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle , FPKGameplayTags::Get().Internal_IncomingDamage , Magnitude);
 
 		Projectile->FinishSpawning(SpawnTransform);
 	}

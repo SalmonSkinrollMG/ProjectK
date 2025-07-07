@@ -93,6 +93,18 @@ void UPkAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	FEffectProperties EffectProperties;
 	SetEffectProperties(Data, EffectProperties);
 
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		float LocalDamage = Data.EvaluatedData.Magnitude;
+		SetIncomingDamage(0);
+		if (LocalDamage > 0.0f)
+		{
+			const float NewHealth = GetHealth() - LocalDamage;
+			SetHealth(FMath::Clamp(NewHealth , 0.0f , GetMaxHealth()));
+
+			const bool bFatal = NewHealth <= 0.0f;
+		}
+	}
 
 	UE_LOG(LogTemp , Warning , TEXT("Health for %s is reduced to %f"),*EffectProperties.TargetActor->GetName(),GetHealth());
 }

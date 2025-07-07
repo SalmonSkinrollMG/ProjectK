@@ -49,6 +49,12 @@ public:
 	FGameplayTag InputTag_Key_NUM_3;
 	FGameplayTag InputTag_Key_NUM_4;
 
+	// --------------------------- Internal Tags ---------------------------
+	FGameplayTag Internal_IncomingDamage;
+
+	//-----------------------------Effects Tags ----------------------------
+	FGameplayTag Internal_Effects_HitReact;
+
 	static const FPKGameplayTags& Get() {return Instance;}
 	static void InitializeNativeGameplayTags();
 protected:

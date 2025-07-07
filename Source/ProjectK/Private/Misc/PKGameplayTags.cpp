@@ -94,5 +94,13 @@ void FPKGameplayTags::InitializeNativeGameplayTags()
 
 	Instance.InputTag_Key_NUM_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("InputTag.Key.4") , TEXT("Number pad 4"));
+
 	
+	// ----------------- Internal Attributes (Not Replicated) -----------------
+	Instance.Internal_IncomingDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Internal.IncomingDamage"), TEXT("Temporary value used to hold incoming damage during calculation."));
+
+	// ----------------- Effects (Not Replicated) -----------------
+	Instance.Internal_Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Internal.Effects.HitReact"), TEXT("Tag to grant the actor to during hit"));
 }

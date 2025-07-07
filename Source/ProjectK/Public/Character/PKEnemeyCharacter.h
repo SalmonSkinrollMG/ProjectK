@@ -37,6 +37,17 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthAttributeUpdated;
 
+	void OnHitReactTagAdded(const FGameplayTag IncomingTag , int32 count);
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bHitReacting = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float BaseWalkSpeed = 250.0f;
+
+	UFUNCTION(BlueprintCallable)
+	virtual UAnimMontage* GetHitAnimMontage_Implementation() override;
+
 protected:
 
 	virtual void BeginPlay() override;
