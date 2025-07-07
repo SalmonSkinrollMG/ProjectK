@@ -42,11 +42,16 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bHitReacting = false;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY( BlueprintReadOnly , Category="Default Attributes")
 	float BaseWalkSpeed = 250.0f;
+
+	UPROPERTY(EditAnywhere , BlueprintReadOnly , Category="Default Attributes")
+	float LifeSpan = 5.0f;
 
 	UFUNCTION(BlueprintCallable)
 	virtual UAnimMontage* GetHitAnimMontage_Implementation() override;
+
+	virtual void Die() override;
 
 protected:
 

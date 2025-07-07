@@ -67,3 +67,18 @@ void UPkAblilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldC
 	const FGameplayEffectSpecHandle MetaAttributeSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfo->MetaAttributes, Level , EffectContextHandle);
 	ASC->ApplyGameplayEffectSpecToSelf(*MetaAttributeSpecHandle.Data.Get());
 }
+
+void UPkAblilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext, UAbilitySystemComponent* ASC)
+{
+	const APKGameMode* PKGameMode = Cast<APKGameMode>(UGameplayStatics::GetGameMode(WorldContext));
+	if (PKGameMode == nullptr)
+	{
+		return;
+	}
+	UCharacterClassInfo* CharacterClassInfo = PKGameMode->CharacterClassInfo;
+	for (auto Ability : CharacterClassInfo->CommonAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability , 1.0);
+		ASC->GiveAbility(AbilitySpec);
+	}
+}

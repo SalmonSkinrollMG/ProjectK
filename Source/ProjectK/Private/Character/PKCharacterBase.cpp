@@ -29,6 +29,26 @@ FVector APKCharacterBase::GetCombatSocketVector() const
 	return WeaponMesh->GetSocketLocation(WeaponProjectileSocket);
 }
 
+void APKCharacterBase::Die()
+{
+	WeaponMesh->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true)); 
+	HandleDeath();
+}
+
+void APKCharacterBase::HandleDeath_Implementation()
+{
+	WeaponMesh->SetSimulatePhysics(true);
+	WeaponMesh->SetEnableGravity(true);
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetEnableGravity(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
+	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
 void APKCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();

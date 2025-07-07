@@ -4,6 +4,7 @@
 #include "Character/PKEnemeyCharacter.h"
 #include "AbilitySystem/PKAbilitySystemComponent.h"
 #include "AbilitySystem/PkAttributeSet.h"
+#include "AbilitySystem/BlueprintLibrary/PkAblilitySystemLibrary.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Misc/PKGameplayTags.h"
@@ -32,12 +33,20 @@ UAnimMontage* APKEnemeyCharacter::GetHitAnimMontage_Implementation()
 	return HitReactMontage;
 }
 
+void APKEnemeyCharacter::Die()
+{
+	SetLifeSpan(LifeSpan);
+	Super::Die();
+}
+
 void APKEnemeyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	
 	InitAbilityActorInfo();
+
+	UPkAblilitySystemLibrary::GiveStartupAbilities(this , AbilitySystemComponent);
 
 	/*
 	 * For enemies , the Widget controller is self

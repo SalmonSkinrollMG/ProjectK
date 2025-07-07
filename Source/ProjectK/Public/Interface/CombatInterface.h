@@ -28,6 +28,8 @@ public:
 
 	virtual FVector GetCombatSocketVector() const;
 
+	virtual void Die() = 0;
+
 	UFUNCTION(BlueprintImplementableEvent , BlueprintCallable)
 	void UpdateWarpTarget(const FVector& WarpTarget);
 

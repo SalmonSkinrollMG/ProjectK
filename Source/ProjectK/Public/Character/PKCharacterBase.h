@@ -37,6 +37,12 @@ public:
 	FName WeaponProjectileSocket = "WeaponProjectileSocket";
 
 	virtual FVector GetCombatSocketVector() const override;
+
+	virtual void Die() override;
+
+	UFUNCTION(NetMulticast , Reliable)
+	virtual void HandleDeath();
+	
 protected:
 	virtual void BeginPlay() override;
 

@@ -7,6 +7,8 @@
 #include "Engine/DataAsset.h"
 #include "CharacterClassInfo.generated.h"
 
+class UGameplayAbility;
+
 UENUM(BlueprintType)
 enum class ECharacterClass : uint8
 {
@@ -40,6 +42,9 @@ class PROJECTK_API UCharacterClassInfo : public UDataAsset
 
 	UPROPERTY(EditDefaultsOnly , Category="CharacterDefaults | CommonDefaults")
 	TSubclassOf<UGameplayEffect> MetaAttributes;
+
+	UPROPERTY(EditDefaultsOnly , Category="CharacterDefaults | CommonDefaults")
+	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
 	
 	FCharacterClassDefaultInfo GetClassDefaultInfo(ECharacterClass Class) const;
 };
