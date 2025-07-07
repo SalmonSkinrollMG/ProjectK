@@ -89,10 +89,12 @@ void UPkAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, fl
 void UPkAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-
 	// Safe handle for gameplay tags, instigator, target, etc.
 	FEffectProperties EffectProperties;
 	SetEffectProperties(Data, EffectProperties);
+
+
+	UE_LOG(LogTemp , Warning , TEXT("Health for %s is reduced to %f"),*EffectProperties.TargetActor->GetName(),GetHealth());
 }
 
 // ------------------------ OnRep Functions ------------------------ //

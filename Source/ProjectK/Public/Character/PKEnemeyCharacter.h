@@ -5,7 +5,11 @@
 #include "CoreMinimal.h"
 #include "PKCharacterBase.h"
 #include "Interface/EnemyInterface.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "PKEnemeyCharacter.generated.h"
+
+
+class UWidgetComponent;
 
 UCLASS()
 class PROJECTK_API APKEnemeyCharacter : public APKCharacterBase, public IEnemyInterface
@@ -23,6 +27,15 @@ public:
 
 	UFUNCTION()
 	virtual int GetPlayerLevel() const override {return Level;}
+
+	UPROPERTY(VisibleAnywhere , BlueprintReadOnly)
+	TObjectPtr<UWidgetComponent> HealthBarWidget;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnHealthAttributeUpdated;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnMaxHealthAttributeUpdated;
 
 protected:
 

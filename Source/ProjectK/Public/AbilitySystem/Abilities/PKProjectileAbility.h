@@ -22,6 +22,9 @@ protected:
 	UPROPERTY(EditAnywhere , BlueprintReadOnly)
 	TSubclassOf<APKProjectile> ProjectileClass;
 
+	UPROPERTY(EditAnywhere , BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> ProjectileEffect;
+
 	UFUNCTION(BlueprintCallable , Category="AbilitiesTasks|Firebolt")
 	void SpawnProjectileTowardsTarget(const FVector& TargetLocation);
 };

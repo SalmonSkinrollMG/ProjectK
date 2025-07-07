@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/CharacterClassInfo.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PkAblilitySystemLibrary.generated.h"
 
@@ -22,4 +23,7 @@ public:
 
 	UFUNCTION(BlueprintPure , Category="Ability System Library | Widget Controller")
 	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(UObject* WorldContext);
+
+	UFUNCTION(BlueprintCallable , Category="Ability System Library | Default Attributes")
+	static void InitializeDefaultAttributes(const UObject* WorldContext , ECharacterClass CharacterClass , float Level , UAbilitySystemComponent* ASC);
 };

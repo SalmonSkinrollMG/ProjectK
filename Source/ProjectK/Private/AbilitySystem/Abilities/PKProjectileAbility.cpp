@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/Abilities/PKProjectileAbility.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Actors/PKProjectile.h"
 #include "Interface/CombatInterface.h"
 
@@ -25,7 +27,6 @@ void UPKProjectileAbility::SpawnProjectileTowardsTarget(const FVector& TargetLoc
 	{
 		const FVector SocketLocation = CombatInterface->GetCombatSocketVector();
 		FRotator SpawnRotation = (TargetLocation - SocketLocation).Rotation();
-		SpawnRotation.Pitch = 0.0f; // parallel to the Ground;
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
 		SpawnTransform.SetRotation(SpawnRotation.Quaternion());
@@ -35,6 +36,10 @@ void UPKProjectileAbility::SpawnProjectileTowardsTarget(const FVector& TargetLoc
 			GetOwningActorFromActorInfo(),
 			Cast<APawn>(GetOwningActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningActorFromActorInfo());
+		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(ProjectileEffect , GetAbilityLevel() , SourceASC->MakeEffectContext());
+		Projectile->EffectSpecHandle = SpecHandle;
 
 		Projectile->FinishSpawning(SpawnTransform);
 	}

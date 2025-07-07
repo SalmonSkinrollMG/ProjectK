@@ -6,14 +6,18 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/PKAbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "ProjectK/ProjectK.h"
 
 APKCharacterBase::APKCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera , ECR_Ignore);
+	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera , ECR_Ignore);
-
+	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile , ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
+	
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMeshMesh");
 	WeaponMesh->SetupAttachment(GetMesh() , WeaponAttachmentSocket);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);

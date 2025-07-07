@@ -135,6 +135,17 @@ void APKPlayerController::HighlightActors(const FHitResult& HitResult)
 void APKPlayerController::HitUnderCursor()
 {
 	GetHitResultUnderCursor(ECC_Visibility , false , CursorHit);
+
+	/*// Draw a debug sphere at hit location
+	DrawDebugSphere(
+		GetWorld(),
+		CursorHit.ImpactPoint,
+		10.0f, // Radius
+		12,
+		CursorHit.bBlockingHit?FColor::Yellow:FColor::Blue,
+		false,
+		.50f
+	);*/
 	if (!CursorHit.bBlockingHit)
 	{
 		return;

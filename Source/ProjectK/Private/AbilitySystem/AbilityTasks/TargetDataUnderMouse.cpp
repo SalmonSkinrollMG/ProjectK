@@ -18,6 +18,15 @@ void UTargetDataUnderMouse::SendMouseCursorData()
 	{
 		FHitResult CursorHit;
 		PC->GetHitResultUnderCursor(ECC_Visibility , false , CursorHit);
+		DrawDebugSphere(
+		GetWorld(),
+		CursorHit.ImpactPoint,
+		10.0f, // Radius
+		12,
+		CursorHit.bBlockingHit?FColor::Yellow:FColor::Blue,
+		false,
+		.50f
+	);
 
 		FGameplayAbilityTargetDataHandle DataHandle;
 		FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit();
