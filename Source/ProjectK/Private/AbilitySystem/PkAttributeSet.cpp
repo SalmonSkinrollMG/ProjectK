@@ -6,8 +6,10 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
+#include "Controller/Player/PKPlayerController.h"
 #include "GameFramework/Character.h"
 #include "Interface/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Misc/PKGameplayTags.h"
 #include "Net/UnrealNetwork.h"
 
@@ -87,6 +89,9 @@ void UPkAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, fl
 	Super::PreAttributeChange(Attribute, NewValue);
 }
 
+
+
+
 void UPkAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -118,10 +123,23 @@ void UPkAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 				TagContainer.AddTag(FPKGameplayTags::Get().Internal_Effects_HitReact);
 				EffectProperties.TargetAbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
 			}
+			ShowFloatingText(EffectProperties, LocalDamage);
 		}
 	}
 
 	UE_LOG(LogTemp , Warning , TEXT("Health for %s is reduced to %f"),*EffectProperties.TargetActor->GetName(),GetHealth());
+}
+
+void UPkAttributeSet::ShowFloatingText(const FEffectProperties& EffectProperties, const float& LocalDamage)
+{
+	//Ignoring Self damage
+	if (EffectProperties.SourceCharacter != EffectProperties.TargetCharacter)
+	{
+		if(APKPlayerController* PC = Cast<APKPlayerController>(UGameplayStatics::GetPlayerController(EffectProperties.SourceCharacter , 0)))
+		{
+			PC->ShowDamageOnClient(LocalDamage , EffectProperties.TargetCharacter);
+		}
+	}
 }
 
 // ------------------------ OnRep Functions ------------------------ //

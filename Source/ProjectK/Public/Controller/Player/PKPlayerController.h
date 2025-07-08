@@ -9,6 +9,7 @@
 #include "PKPlayerController.generated.h"
 
 
+class UDamageWidgetComponent;
 class USplineComponent;
 class UPKAbilitySystemComponent;
 class UPKInputConfig;
@@ -24,6 +25,9 @@ class PROJECTK_API APKPlayerController : public APlayerController
 
 public:
 	APKPlayerController();
+
+	UFUNCTION(Client , Unreliable)
+	void ShowDamageOnClient(float DamageNumber , ACharacter* TargetCharacter);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -79,6 +83,9 @@ private:
 	void ShiftKeyPressed(){ bShiftKeyPressed = true; }
 	void ShiftKeyReleased(){ bShiftKeyPressed = false; }
 	bool bShiftKeyPressed = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageWidgetComponent> DamageTextComponent;
 };
 
 

@@ -2,12 +2,13 @@
 
 
 #include "Controller/Player/PKPlayerController.h"
-
+#include "GameFramework/Character.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputSubsystemInterface.h"
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
+#include "MovieSceneTracksComponentTypes.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "AbilitySystem/PKAbilitySystemComponent.h"
@@ -16,11 +17,24 @@
 #include "Input/PKEnhancedInputComponent.h"
 #include "Interface/EnemyInterface.h"
 #include "Misc/PKGameplayTags.h"
+#include "UI/Components/DamageWidgetComponent.h"
 
 APKPlayerController::APKPlayerController()
 {
 	bReplicates = true;
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("SplineConponent"));
+}
+
+void APKPlayerController::ShowDamageOnClient_Implementation(float DamageNumber, ACharacter* TargetCharacter)
+{
+	if (IsValid(TargetCharacter) && DamageTextComponent)
+	{
+		UDamageWidgetComponent* DamageComponent = NewObject<UDamageWidgetComponent>(TargetCharacter , DamageTextComponent);
+		DamageComponent->RegisterComponent();
+		DamageComponent->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		DamageComponent->UpdateDamageNumber(DamageNumber);
+		DamageComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	}
 }
 
 void APKPlayerController::BeginPlay()
