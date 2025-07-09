@@ -37,7 +37,7 @@ void APKProjectile::Destroyed()
 {
 	if (!HasAuthority())
 	{
-		if (!bHit )
+		if (bHit )
 		{
 			SpawnFXatLocation();
 		}
@@ -62,7 +62,7 @@ void APKProjectile::BeginPlay()
 	}
 }
 
-void APKProjectile::SpawnFXatLocation()
+void APKProjectile::SpawnFXatLocation() const
 {
 	UGameplayStatics::PlaySoundAtLocation(this , HitSFX , GetActorLocation() , FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this , HitVFX , GetActorLocation());
@@ -78,12 +78,12 @@ void APKProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AA
 		{
 			TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 		}
-		Destroy();
 	}
 	else
 	{
 		bHit = true;
 	}
+	Destroy();
 }
 
 

@@ -26,7 +26,7 @@ class PROJECTK_API APKPlayerController : public APlayerController
 public:
 	APKPlayerController();
 
-	UFUNCTION(Client , Unreliable)
+	UFUNCTION(NetMulticast , Unreliable)
 	void ShowDamageOnClient(float DamageNumber , ACharacter* TargetCharacter);
 	
 protected:

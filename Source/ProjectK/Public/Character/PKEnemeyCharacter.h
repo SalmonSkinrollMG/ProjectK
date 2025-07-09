@@ -39,6 +39,8 @@ public:
 
 	void OnHitReactTagAdded(const FGameplayTag IncomingTag , int32 count);
 
+	virtual void HandleDeath() override;
+
 	UPROPERTY(BlueprintReadOnly)
 	bool bHitReacting = false;
 
@@ -63,4 +65,7 @@ protected:
 
 	UPROPERTY(EditAnywhere , BlueprintReadOnly ,Category = "Enemy Attribute")
 	int Level = 0;
+
+	void OnHealthUpdated(const FOnAttributeChangeData& Data) const;
+	void OnMaxHealthUpdated(const FOnAttributeChangeData& Data) const;
 };

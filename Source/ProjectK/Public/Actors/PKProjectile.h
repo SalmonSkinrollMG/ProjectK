@@ -41,7 +41,7 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
-	void SpawnFXatLocation();
+	void SpawnFXatLocation() const;
 
 private:
 	

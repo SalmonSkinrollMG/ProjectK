@@ -27,6 +27,10 @@ APKPlayerController::APKPlayerController()
 
 void APKPlayerController::ShowDamageOnClient_Implementation(float DamageNumber, ACharacter* TargetCharacter)
 {
+	if (HasAuthority())
+	{
+		return;
+	}
 	if (IsValid(TargetCharacter) && DamageTextComponent)
 	{
 		UDamageWidgetComponent* DamageComponent = NewObject<UDamageWidgetComponent>(TargetCharacter , DamageTextComponent);

@@ -135,9 +135,13 @@ void UPkAttributeSet::ShowFloatingText(const FEffectProperties& EffectProperties
 	//Ignoring Self damage
 	if (EffectProperties.SourceCharacter != EffectProperties.TargetCharacter)
 	{
-		if(APKPlayerController* PC = Cast<APKPlayerController>(UGameplayStatics::GetPlayerController(EffectProperties.SourceCharacter , 0)))
+		//Showing damage Numbers for all the player controller in the game . So both the players would be able to see the damage number
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 		{
-			PC->ShowDamageOnClient(LocalDamage , EffectProperties.TargetCharacter);
+			if (auto PC = Cast<APKPlayerController>(It->Get()))
+			{
+				PC->ShowDamageOnClient(LocalDamage, EffectProperties.TargetCharacter);
+			}
 		}
 	}
 }

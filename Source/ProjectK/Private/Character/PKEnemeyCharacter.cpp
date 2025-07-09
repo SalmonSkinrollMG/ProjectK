@@ -42,6 +42,7 @@ void APKEnemeyCharacter::Die()
 void APKEnemeyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile , ECR_Overlap);
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	
 	InitAbilityActorInfo();
@@ -60,18 +61,8 @@ void APKEnemeyCharacter::BeginPlay()
 	OnHealthAttributeUpdated.Broadcast(AS->GetHealth());
 	OnMaxHealthAttributeUpdated.Broadcast(AS->GetMaxHealth());
 	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddWeakLambda(this,
-		[this](const FOnAttributeChangeData& Data)
-		{
-			OnHealthAttributeUpdated.Broadcast(Data.NewValue);
-		}
-	);
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHealthAttribute()).AddWeakLambda(this,
-		[this](const FOnAttributeChangeData& Data)
-		{
-			OnHealthAttributeUpdated.Broadcast(Data.NewValue);
-		}
-	);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddUObject(this , &ThisClass::OnHealthUpdated);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHealthAttribute()).AddUObject(this , &ThisClass::OnMaxHealthUpdated);
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(FPKGameplayTags::Get().Internal_Effects_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
 	this,
@@ -86,6 +77,12 @@ void APKEnemeyCharacter::OnHitReactTagAdded(const FGameplayTag IncomingTag, int3
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.0f : BaseWalkSpeed;
 }
 
+void APKEnemeyCharacter::HandleDeath()
+{
+	HealthBarWidget->DestroyComponent();
+	Super::HandleDeath();
+}
+
 void APKEnemeyCharacter::HighlightActor()
 {
 	bHighlighted = true;
@@ -96,6 +93,16 @@ void APKEnemeyCharacter::UnHighlightActor()
 {
 	bHighlighted = false;
 	GetMesh()->SetRenderCustomDepth(false);
+}
+
+void APKEnemeyCharacter::OnHealthUpdated(const FOnAttributeChangeData& Data) const
+{
+	OnHealthAttributeUpdated.Broadcast(Data.NewValue);
+}
+
+void APKEnemeyCharacter::OnMaxHealthUpdated(const FOnAttributeChangeData& Data) const
+{
+	OnMaxHealthAttributeUpdated.Broadcast(Data.NewValue);
 }
 
 void APKEnemeyCharacter::InitAbilityActorInfo()

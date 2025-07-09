@@ -41,7 +41,7 @@ void UPKProjectileAbility::SpawnProjectileTowardsTarget(const FVector& TargetLoc
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningActorFromActorInfo());
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(ProjectileEffect , GetAbilityLevel() , SourceASC->MakeEffectContext());
 		Projectile->EffectSpecHandle = SpecHandle;
-		const float Magnitude = ScalableFloat.GetValueAtLevel(25.f);
+		const float Magnitude = ScalableFloat.GetValueAtLevel(GetAbilityLevel());
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle , FPKGameplayTags::Get().Internal_IncomingDamage , Magnitude);
 
 		Projectile->FinishSpawning(SpawnTransform);
