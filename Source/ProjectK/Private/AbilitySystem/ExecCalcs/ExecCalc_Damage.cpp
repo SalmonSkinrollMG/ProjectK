@@ -4,12 +4,16 @@
 #include "AbilitySystem/ExecCalcs/ExecCalc_Damage.h"
 #include "AbilitySystem/PkAttributeSet.h"
 #include "AbilitySystemComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Misc/PKGameplayTags.h"
 
 struct PKDamageStatics
 {
+	//1
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense)
 	PKDamageStatics()
 	{
+		//2
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,Defense, Target , false);
 	}
 };
@@ -21,6 +25,7 @@ static const PKDamageStatics& GetDamageStatics()
 }
 UExecCalc_Damage::UExecCalc_Damage()
 {
+	//3
 	RelevantAttributesToCapture.Add(GetDamageStatics().DefenseDef);
 }
 
@@ -41,12 +46,17 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParams.SourceTags = SourceTags;
 	EvaluateParams.TargetTags = TargetTags;
 
-	float Defense = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetDamageStatics().DefenseDef ,EvaluateParams ,Defense);
-	Defense = FMath::Max<float>(0.0f , Defense);
-	++Defense;
+	float Damage = Spec.GetSetByCallerMagnitude(FPKGameplayTags::Get().Internal_IncomingDamage);
 
-	const FGameplayModifierEvaluatedData ModifierEvaluatedData(GetDamageStatics().DefenseProperty , EGameplayModOp::Additive , Defense);
+	if (Damage > 0)
+	{
+		float DefenceInTarget = 0.0f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetDamageStatics().DefenseDef , EvaluateParams , DefenceInTarget);
+		Damage = Damage * (UKismetMathLibrary::SafeDivide(100 , 100 + DefenceInTarget));// Defense multiplier 
+	}
+	
+	
+	const FGameplayModifierEvaluatedData ModifierEvaluatedData(UPkAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive , Damage);
 	OutExecutionOutput.AddOutputModifier(ModifierEvaluatedData);
 	
 }
