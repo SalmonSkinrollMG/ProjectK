@@ -29,4 +29,7 @@ public:
 
 	UFUNCTION(BlueprintCallable , Category="Ability System Library | Default Attributes")
 	static void GiveStartupAbilities(const UObject* WorldContext , UAbilitySystemComponent* ASC);
+
+	UFUNCTION(BlueprintCallable , Category="Ability System Library | Gameplay Effects")
+	static bool IsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandle);
 };

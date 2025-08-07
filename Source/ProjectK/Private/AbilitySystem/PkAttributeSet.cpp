@@ -130,7 +130,7 @@ void UPkAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	UE_LOG(LogTemp , Warning , TEXT("Health for %s is reduced to %f"),*EffectProperties.TargetActor->GetName(),GetHealth());
 }
 
-void UPkAttributeSet::ShowFloatingText(const FEffectProperties& EffectProperties, const float& LocalDamage)
+void UPkAttributeSet::ShowFloatingText(const FEffectProperties& EffectProperties, const float& LocalDamage) const
 {
 	//Ignoring Self damage
 	if (EffectProperties.SourceCharacter != EffectProperties.TargetCharacter)

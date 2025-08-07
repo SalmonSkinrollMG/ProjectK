@@ -3,6 +3,7 @@
 #include "AbilitySystem/BlueprintLibrary/PkAblilitySystemLibrary.h"
 
 #include "AbilitySystemComponent.h"
+#include "PKAbilityTypes.h"
 #include "UI/WidgetController/PKWidgetController.h"
 #include "Controller/Player/PKPlayerController.h"
 #include "Game/PKGameMode.h"
@@ -81,4 +82,13 @@ void UPkAblilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext,
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability , 1.0);
 		ASC->GiveAbility(AbilitySpec);
 	}
+}
+
+bool UPkAblilitySystemLibrary::IsCriticalHit(const FGameplayEffectContextHandle& EffectContext)
+{
+	if (const FPKGameplayEffectContext* PKGameplayEffectContext = static_cast<const FPKGameplayEffectContext*>(EffectContext.Get()))
+	{
+		return PKGameplayEffectContext->IsCriticalHit();
+	}
+	return false;
 }

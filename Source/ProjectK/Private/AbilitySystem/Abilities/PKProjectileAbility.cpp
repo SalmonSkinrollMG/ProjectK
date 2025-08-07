@@ -39,8 +39,20 @@ void UPKProjectileAbility::SpawnProjectileTowardsTarget(const FVector& TargetLoc
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningActorFromActorInfo());
+
+		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+		EffectContextHandle.SetAbility(this);
+		EffectContextHandle.AddSourceObject(Projectile);
+		TArray<TWeakObjectPtr<AActor>> Actors;
+		Actors.Add(Projectile);
+		EffectContextHandle.AddActors(Actors);
+		FHitResult HitResult;
+		HitResult.Location = TargetLocation;
+		EffectContextHandle.AddHitResult(HitResult);
+		
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(ProjectileEffect , GetAbilityLevel() , SourceASC->MakeEffectContext());
 		Projectile->EffectSpecHandle = SpecHandle;
+		
 		const float Magnitude = ScalableFloat.GetValueAtLevel(GetAbilityLevel());
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle , FPKGameplayTags::Get().Internal_IncomingDamage , Magnitude);
 

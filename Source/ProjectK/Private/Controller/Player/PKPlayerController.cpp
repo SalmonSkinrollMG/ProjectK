@@ -27,7 +27,7 @@ APKPlayerController::APKPlayerController()
 
 void APKPlayerController::ShowDamageOnClient_Implementation(float DamageNumber, ACharacter* TargetCharacter)
 {
-	if (HasAuthority())
+	if (HasAuthority() || !IsLocalPlayerController())
 	{
 		return;
 	}
