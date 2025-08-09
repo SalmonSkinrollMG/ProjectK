@@ -26,7 +26,7 @@ void UPKAbilitySystemComponent::AddCharacterAbilites(TArray<TSubclassOf<UGamepla
 
 		if (UPKGameplayAbilities* PkGameplayAbilities = Cast<UPKGameplayAbilities>(AbilitySpec.Ability))
 		{
-			AbilitySpec.GetDynamicSpecSourceTags().AddTag(PkGameplayAbilities->StartupInputTag);
+			AbilitySpec.GetDynamicSpecSourceTags().AddTag(PkGameplayAbilities->DamageStartupInputTag);
 			GiveAbility(AbilitySpec);
 		}
 	}

@@ -27,5 +27,5 @@ public:
 
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void UpdateDamageNumber(float DamageNumber);
+	void UpdateDamageNumber(float DamageNumber , bool bCriticalHit);
 };

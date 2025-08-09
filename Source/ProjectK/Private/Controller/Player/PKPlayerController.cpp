@@ -25,10 +25,13 @@ APKPlayerController::APKPlayerController()
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("SplineConponent"));
 }
 
-void APKPlayerController::ShowDamageOnClient_Implementation(float DamageNumber, ACharacter* TargetCharacter)
+void APKPlayerController::ShowDamageOnClient_Implementation(float DamageNumber, ACharacter* TargetCharacter, bool bCriticalHit)
 {
-	if (HasAuthority() || !IsLocalPlayerController())
+	if (HasAuthority() && GetNetMode()!=NM_ListenServer && GetNetMode()!=NM_Standalone)
 	{
+		/*
+		 * @TODO : Look for other conditions.
+		 */
 		return;
 	}
 	if (IsValid(TargetCharacter) && DamageTextComponent)
@@ -36,7 +39,7 @@ void APKPlayerController::ShowDamageOnClient_Implementation(float DamageNumber, 
 		UDamageWidgetComponent* DamageComponent = NewObject<UDamageWidgetComponent>(TargetCharacter , DamageTextComponent);
 		DamageComponent->RegisterComponent();
 		DamageComponent->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-		DamageComponent->UpdateDamageNumber(DamageNumber);
+		DamageComponent->UpdateDamageNumber(DamageNumber , bCriticalHit);
 		DamageComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	}
 }

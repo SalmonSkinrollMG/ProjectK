@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/BlueprintLibrary/PkAblilitySystemLibrary.h"
 #include "Controller/Player/PKPlayerController.h"
 #include "GameFramework/Character.h"
 #include "Interface/CombatInterface.h"
@@ -120,17 +121,18 @@ void UPkAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 			else
 			{
 				FGameplayTagContainer TagContainer;
-				TagContainer.AddTag(FPKGameplayTags::Get().Internal_Effects_HitReact);
+				TagContainer.AddTag(FPKGameplayTags::Get().Effects_HitReact);
 				EffectProperties.TargetAbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
 			}
-			ShowFloatingText(EffectProperties, LocalDamage);
+			const bool bCriticalHit = UPkAblilitySystemLibrary::IsCriticalHit(EffectProperties.EffectContextHandle);
+			ShowFloatingText(EffectProperties, LocalDamage, bCriticalHit );
 		}
 	}
 
 	UE_LOG(LogTemp , Warning , TEXT("Health for %s is reduced to %f"),*EffectProperties.TargetActor->GetName(),GetHealth());
 }
 
-void UPkAttributeSet::ShowFloatingText(const FEffectProperties& EffectProperties, const float& LocalDamage) const
+void UPkAttributeSet::ShowFloatingText(const FEffectProperties& EffectProperties, const float& LocalDamage, bool bCriticalHit) const
 {
 	//Ignoring Self damage
 	if (EffectProperties.SourceCharacter != EffectProperties.TargetCharacter)
@@ -140,7 +142,7 @@ void UPkAttributeSet::ShowFloatingText(const FEffectProperties& EffectProperties
 		{
 			if (auto PC = Cast<APKPlayerController>(It->Get()))
 			{
-				PC->ShowDamageOnClient(LocalDamage, EffectProperties.TargetCharacter);
+				PC->ShowDamageOnClient(LocalDamage, EffectProperties.TargetCharacter , bCriticalHit);
 			}
 		}
 	}

@@ -27,7 +27,7 @@ public:
 	APKPlayerController();
 
 	UFUNCTION(NetMulticast , Unreliable)
-	void ShowDamageOnClient(float DamageNumber , ACharacter* TargetCharacter);
+	void ShowDamageOnClient(float DamageNumber , ACharacter* TargetCharacter, bool bCriticalHit);
 	
 protected:
 	virtual void BeginPlay() override;

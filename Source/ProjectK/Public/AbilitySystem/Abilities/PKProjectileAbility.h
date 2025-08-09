@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PKGameplayAbilities.h"
+#include "PKDamageGameplayAbility.h"
 #include "PKProjectileAbility.generated.h"
 
 class APKProjectile;
@@ -11,7 +11,7 @@ class APKProjectile;
  * 
  */
 UCLASS()
-class PROJECTK_API UPKProjectileAbility : public UPKGameplayAbilities
+class PROJECTK_API UPKProjectileAbility : public UPKDamageGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -21,9 +21,6 @@ protected:
 
 	UPROPERTY(EditAnywhere , BlueprintReadOnly)
 	TSubclassOf<APKProjectile> ProjectileClass;
-
-	UPROPERTY(EditAnywhere , BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> ProjectileEffect;
 
 	UFUNCTION(BlueprintCallable , Category="AbilitiesTasks|Firebolt")
 	void SpawnProjectileTowardsTarget(const FVector& TargetLocation);

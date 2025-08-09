@@ -64,7 +64,7 @@ void APKEnemeyCharacter::BeginPlay()
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddUObject(this , &ThisClass::OnHealthUpdated);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHealthAttribute()).AddUObject(this , &ThisClass::OnMaxHealthUpdated);
 
-	AbilitySystemComponent->RegisterGameplayTagEvent(FPKGameplayTags::Get().Internal_Effects_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
+	AbilitySystemComponent->RegisterGameplayTagEvent(FPKGameplayTags::Get().Effects_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
 	this,
 	&APKEnemeyCharacter::OnHitReactTagAdded
 	);

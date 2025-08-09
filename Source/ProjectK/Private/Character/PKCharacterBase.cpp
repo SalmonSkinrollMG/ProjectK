@@ -63,6 +63,7 @@ void APKCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Attribute)
 	checkf(Attribute,TEXT("DefaultPrimaryAttribute is not a valid APKCharacterBase"));
 	FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
 	EffectContextHandle.AddSourceObject(this);
+	EffectContextHandle.AddInstigator(this , this);
 	const FGameplayEffectSpecHandle GameplayEffectSpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(Attribute , 1.0f , EffectContextHandle);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*GameplayEffectSpecHandle.Data.Get() , GetAbilitySystemComponent());
 }

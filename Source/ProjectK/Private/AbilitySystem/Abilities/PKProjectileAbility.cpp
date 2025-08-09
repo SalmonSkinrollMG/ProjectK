@@ -40,6 +40,7 @@ void UPKProjectileAbility::SpawnProjectileTowardsTarget(const FVector& TargetLoc
 
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningActorFromActorInfo());
 
+		/*
 		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
 		EffectContextHandle.SetAbility(this);
 		EffectContextHandle.AddSourceObject(Projectile);
@@ -49,12 +50,17 @@ void UPKProjectileAbility::SpawnProjectileTowardsTarget(const FVector& TargetLoc
 		FHitResult HitResult;
 		HitResult.Location = TargetLocation;
 		EffectContextHandle.AddHitResult(HitResult);
+		EffectContextHandle.AddInstigator(GetOwningActorFromActorInfo() , Projectile);
+		*/
 		
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(ProjectileEffect , GetAbilityLevel() , SourceASC->MakeEffectContext());
 		Projectile->EffectSpecHandle = SpecHandle;
-		
-		const float Magnitude = ScalableFloat.GetValueAtLevel(GetAbilityLevel());
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle , FPKGameplayTags::Get().Internal_IncomingDamage , Magnitude);
+
+		for (auto& Pair : DamageTypesMap)
+		{
+			const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle , Pair.Key , ScaledDamage);
+		}
 
 		Projectile->FinishSpawning(SpawnTransform);
 	}

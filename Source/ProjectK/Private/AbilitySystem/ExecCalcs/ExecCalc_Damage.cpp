@@ -12,12 +12,17 @@ struct PKDamageStatics
 {
 	//1
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Defense)
+	
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Attack)
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CritRate)
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CritDamage)
 	PKDamageStatics()
 	{
 		//2
+		
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,Defense, Target , false);
+		
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,Attack, Source , false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,CritRate, Source , false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,CritDamage, Source , false);
 	}
@@ -32,6 +37,8 @@ UExecCalc_Damage::UExecCalc_Damage()
 {
 	//3
 	RelevantAttributesToCapture.Add(GetDamageStatics().DefenseDef);
+
+	RelevantAttributesToCapture.Add(GetDamageStatics().AttackDef);
 	RelevantAttributesToCapture.Add(GetDamageStatics().CritRateDef);
 	RelevantAttributesToCapture.Add(GetDamageStatics().CritDamageDef);
 }
@@ -84,7 +91,16 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParams.SourceTags = SourceTags;
 	EvaluateParams.TargetTags = TargetTags;
 
-	float Damage = Spec.GetSetByCallerMagnitude(FPKGameplayTags::Get().Internal_IncomingDamage);
+	//This Damage is got from the projectile ability of a particular Damage type , where we take the damage based on curve.
+	float Damage = Spec.GetSetByCallerMagnitude(FPKGameplayTags::Get().Internal_Damage);
+
+	for (FGameplayTag DamageType : FPKGameplayTags::Get().Internal_DamageTypes)
+	{
+		//Here we can Decrease/Increase the Damage based on the Damage Type applied.
+		//GetSetByCallerMagnitude has the check for Tags . The Damage Value of this particular tag will be added to the damage.
+		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageType);
+		Damage += DamageTypeValue;
+	}
 
 	//Get PKEffectContext.
 	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
@@ -93,7 +109,14 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	if (Damage > 0)
 	{
-		Damage = Damage * CalculateCritDamage(ExecutionParams, EvaluateParams, PKEffectContext) * CalculateTargetDefenceMultiplier(ExecutionParams, EvaluateParams);
+		float BaseAttack = 0.0f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetDamageStatics().AttackDef , EvaluateParams , BaseAttack);
+
+		//Taking Damage from curve table . (The value form curve table is based on XP) -> check above.GetCallerbymagnitude.
+		//This Curve table damage could be the weapom's Damage and has nothing to do with player stats.
+		//For now excluding the curve table and using the player stat(Attack) for causing damage.
+		//Final Damage should be Damage = WeaponAttack + Base attack (Both are based on level)
+		Damage = BaseAttack * CalculateCritDamage(ExecutionParams, EvaluateParams, PKEffectContext) * CalculateTargetDefenceMultiplier(ExecutionParams, EvaluateParams);
 	}
 	
 	const FGameplayModifierEvaluatedData ModifierEvaluatedData(UPkAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive , Damage);

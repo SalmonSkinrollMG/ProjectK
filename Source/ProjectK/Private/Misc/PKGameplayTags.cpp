@@ -97,10 +97,18 @@ void FPKGameplayTags::InitializeNativeGameplayTags()
 
 	
 	// ----------------- Internal Attributes (Not Replicated) -----------------
-	Instance.Internal_IncomingDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Internal.IncomingDamage"), TEXT("Temporary value used to hold incoming damage during calculation."));
+	Instance.Internal_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Internal.Damage"), TEXT("Value used to hold incoming damage during calculation."));
 
+	Instance.Internal_FireDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Internal.FireDamage"), TEXT("Value used to hold incoming fire damage during calculation."));
+
+
+	//Adding tags to this array when a new damage type is added.
+	Instance.Internal_DamageTypes.Add(Instance.Internal_FireDamage);
+
+	
 	// ----------------- Effects (Not Replicated) -----------------
-	Instance.Internal_Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Internal.Effects.HitReact"), TEXT("Tag to grant the actor to during hit"));
+	Instance.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Internal.Effects.HitReact"), TEXT("Tag to grant the actor during hit , This will trigger hit reaction events"));
 }
