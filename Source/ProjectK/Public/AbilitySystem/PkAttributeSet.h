@@ -195,12 +195,25 @@ public:
 	ATTRIBUTE_ACCESSORS(UPkAttributeSet, MaxHealth);
 
 	/*
+	 * Resistance Attributes
+	 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_FireResistance, Category = "Resistance Attributes")
+	FGameplayAttributeData FireResistance;
+	ATTRIBUTE_ACCESSORS(UPkAttributeSet, FireResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_PhysicalResistance, Category = "Resistance Attributes")
+	FGameplayAttributeData PhysicalResistance;
+	ATTRIBUTE_ACCESSORS(UPkAttributeSet, PhysicalResistance);
+	
+	/*
 	 * Internal / Temporary Attributes
 	 */
 	UPROPERTY(BlueprintReadOnly, Category = "Internal")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UPkAttributeSet, IncomingDamage);
 
+
+	
 
 	//---------------------------------------------OnReps----------------------------------------------//
 
@@ -236,6 +249,11 @@ public:
 	// Vital
 	UFUNCTION() void OnRep_Health(const FGameplayAttributeData& OldValue) const;
 	UFUNCTION() void OnRep_MaxHealth(const FGameplayAttributeData& OldValue) const;
+
+	//Resistance
+
+	UFUNCTION() void OnRep_FireResistance(const FGameplayAttributeData& OldValue) const;
+	UFUNCTION() void OnRep_PhysicalResistance(const FGameplayAttributeData& OldValue) const;
 
 	//-----------------------------------Helpers-------------------------------------------------
 	

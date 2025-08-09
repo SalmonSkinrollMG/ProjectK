@@ -19,6 +19,7 @@ public:
 	
 	// ----------------- Primary Attributes -----------------
 	FGameplayTag Attribute_Primary_HP;
+	FGameplayTag Attribute_Primary_MaxHealth;
 	FGameplayTag Attribute_Primary_Attack;
 	FGameplayTag Attribute_Primary_Defense;
 	FGameplayTag Attribute_Primary_Speed;
@@ -49,11 +50,16 @@ public:
 	FGameplayTag InputTag_Key_NUM_3;
 	FGameplayTag InputTag_Key_NUM_4;
 
-	// --------------------------- Internal Tags ---------------------------
-	FGameplayTag Internal_Damage;
-	FGameplayTag Internal_FireDamage;
+	// --------------------------- Damage Tags ---------------------------
+	FGameplayTag Attributes_Damage_DamageDelt;
+	FGameplayTag Attributes_Damage_FireDamage;
+	FGameplayTag Attributes_Damage_PhysicalDamage;
 
-	TArray<FGameplayTag> Internal_DamageTypes;
+	//-----------------------------Resistance Tags------------------------
+	FGameplayTag Attributes_Resistance_FireResistance;
+	FGameplayTag Attributes_Resistance_PhysicalResistance;
+	
+	TMap<FGameplayTag , FGameplayTag> Attributes_DamageTypesToResistanceMap;
 
 	//-----------------------------Effects Tags ----------------------------
 	FGameplayTag Effects_HitReact;

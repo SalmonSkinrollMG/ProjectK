@@ -92,13 +92,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParams.TargetTags = TargetTags;
 
 	//This Damage is got from the projectile ability of a particular Damage type , where we take the damage based on curve.
-	float Damage = Spec.GetSetByCallerMagnitude(FPKGameplayTags::Get().Internal_Damage);
+	float Damage = Spec.GetSetByCallerMagnitude(FPKGameplayTags::Get().Attributes_Damage_DamageDelt);
 
-	for (FGameplayTag DamageType : FPKGameplayTags::Get().Internal_DamageTypes)
+	for (const TTuple DamageTypeToResistance : FPKGameplayTags::Get().Attributes_DamageTypesToResistanceMap)
 	{
 		//Here we can Decrease/Increase the Damage based on the Damage Type applied.
 		//GetSetByCallerMagnitude has the check for Tags . The Damage Value of this particular tag will be added to the damage.
-		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageType);
+		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeToResistance.Key);
 		Damage += DamageTypeValue;
 	}
 

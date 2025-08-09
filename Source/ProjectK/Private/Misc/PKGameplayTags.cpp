@@ -22,6 +22,9 @@ void FPKGameplayTags::InitializeNativeGameplayTags()
 	Instance.Attribute_Primary_HP = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attribute.Primary.HP"), TEXT("Character's Health Points"));
 
+	Instance.Attribute_Primary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attribute.Primary.MaxHealth"), TEXT("Character's Max Health Points"));
+
 	Instance.Attribute_Primary_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attribute.Primary.Attack"), TEXT("Base attack power"));
 
@@ -96,19 +99,27 @@ void FPKGameplayTags::InitializeNativeGameplayTags()
 		FName("InputTag.Key.4") , TEXT("Number pad 4"));
 
 	
-	// ----------------- Internal Attributes (Not Replicated) -----------------
-	Instance.Internal_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Internal.Damage"), TEXT("Value used to hold incoming damage during calculation."));
+	// ----------------- Damage Attributes-----------------
+	Instance.Attributes_Damage_DamageDelt = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Attributes.Damage.DamageDelt"), TEXT("Value used to hold incoming damage during calculation."));
 
-	Instance.Internal_FireDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Internal.FireDamage"), TEXT("Value used to hold incoming fire damage during calculation."));
-
-
-	//Adding tags to this array when a new damage type is added.
-	Instance.Internal_DamageTypes.Add(Instance.Internal_FireDamage);
-
+	Instance.Attributes_Damage_FireDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Attributes.Damage.FireDamage"), TEXT("Value used to hold incoming fire damage during calculation."));
 	
-	// ----------------- Effects (Not Replicated) -----------------
+	Instance.Attributes_Damage_PhysicalDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Attributes.Damage.PhysicalDamage"), TEXT("Value used to hold incoming physical damage during calculation."));
+
+
+	//------------------------------Resistance-----------------------
+	Instance.Attributes_Resistance_FireResistance = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Attributes.Damage.FireResistance"), TEXT("Fire Damage Resistance of the character."));
+	Instance.Attributes_DamageTypesToResistanceMap.Add(Instance.Attributes_Damage_FireDamage , Instance.Attributes_Resistance_FireResistance);
+
+	Instance.Attributes_Resistance_PhysicalResistance = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Attributes.Damage.PhysicalResistance"), TEXT("Physical Damage Resistance of the character."));
+	Instance.Attributes_DamageTypesToResistanceMap.Add(Instance.Attributes_Damage_PhysicalDamage , Instance.Attributes_Resistance_PhysicalResistance);
+	
+	// -----------------------------Effects--------------------------
 	Instance.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag( 
 		FName("Internal.Effects.HitReact"), TEXT("Tag to grant the actor during hit , This will trigger hit reaction events"));
 }

@@ -23,6 +23,7 @@ UPkAttributeSet::UPkAttributeSet()
 	TagToAttributeMap.Add(GameplayTags.Attribute_Meta_ExperienceToNextLevel, GetExperienceToNextLevelAttribute);
 	// ----------------- Primary -----------------
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_HP, GetHealthAttribute);
+	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_MaxHealth, GetMaxHealthAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_Attack, GetAttackAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_Defense, GetDefenseAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_Speed, GetSpeedAttribute);
@@ -43,8 +44,10 @@ UPkAttributeSet::UPkAttributeSet()
 	TagToAttributeMap.Add(GameplayTags.Attribute_Secondary_CooldownReduction, GetCooldownReductionAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Secondary_DamageReduction, GetDamageReductionAttribute);
 
+	//------------------Vital----------------------
 
-
+	TagToAttributeMap.Add(GameplayTags.Attributes_Resistance_FireResistance, GetFireResistanceAttribute);
+	TagToAttributeMap.Add(GameplayTags.Attributes_Resistance_PhysicalResistance, GetPhysicalResistanceAttribute);
 }
 
 void UPkAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -83,6 +86,10 @@ void UPkAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 	// Vital
 	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
+
+	// Vital
+	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, FireResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, PhysicalResistance, COND_None, REPNOTIFY_Always);
 }
 
 void UPkAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -251,6 +258,15 @@ void UPkAttributeSet::OnRep_Health(const FGameplayAttributeData& OldValue) const
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, Health, OldValue);
 }
 void UPkAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, MaxHealth, OldValue);
+}
+
+void UPkAttributeSet::OnRep_FireResistance(const FGameplayAttributeData& OldValue) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, Health, OldValue);
+}
+void UPkAttributeSet::OnRep_PhysicalResistance(const FGameplayAttributeData& OldValue) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, MaxHealth, OldValue);
 }
