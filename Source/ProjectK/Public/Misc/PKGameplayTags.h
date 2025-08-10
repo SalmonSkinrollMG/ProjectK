@@ -27,6 +27,7 @@ public:
 	FGameplayTag Attribute_Primary_Stamina;
 	FGameplayTag Attribute_Primary_EnergyRecharge;
 	FGameplayTag Attribute_Primary_ElementalResistance;
+	FGameplayTag Attributes_Primary_PhysicalResistance;
 	FGameplayTag Attribute_Primary_ResolveCost;
 
 	// ----------------- Secondary Attributes -----------------
@@ -54,10 +55,7 @@ public:
 	FGameplayTag Attributes_Damage_DamageDelt;
 	FGameplayTag Attributes_Damage_FireDamage;
 	FGameplayTag Attributes_Damage_PhysicalDamage;
-
-	//-----------------------------Resistance Tags------------------------
-	FGameplayTag Attributes_Resistance_FireResistance;
-	FGameplayTag Attributes_Resistance_PhysicalResistance;
+	
 	
 	TMap<FGameplayTag , FGameplayTag> Attributes_DamageTypesToResistanceMap;
 

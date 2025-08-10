@@ -82,3 +82,4 @@ DerivedDataCache/*
 # Ignore HoloLens platform config
 Platforms/HoloLens/
 *.user
+/.idea

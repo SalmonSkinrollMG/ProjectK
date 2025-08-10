@@ -42,9 +42,15 @@ void FPKGameplayTags::InitializeNativeGameplayTags()
 
 	Instance.Attribute_Primary_EnergyRecharge = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attribute.Primary.EnergyRecharge"), TEXT("Rate at which resolve/energy is regenerated"));
-
+	
+	//------------------------------Resistance-----------------------
 	Instance.Attribute_Primary_ElementalResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attribute.Primary.ElementalResistance"), TEXT("Resistance against elemental damage"));
+	Instance.Attributes_DamageTypesToResistanceMap.Add(Instance.Attributes_Damage_FireDamage , Instance.Attribute_Primary_ElementalResistance);
+
+	Instance.Attributes_Primary_PhysicalResistance = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Attributes.Damage.PhysicalResistance"), TEXT("Physical Damage Resistance of the character."));
+	Instance.Attributes_DamageTypesToResistanceMap.Add(Instance.Attributes_Damage_PhysicalDamage , Instance.Attributes_Primary_PhysicalResistance);
 
 	Instance.Attribute_Primary_ResolveCost = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attribute.Primary.ResolveCost"), TEXT("Energy cost to use ultimate abilities"));
@@ -108,16 +114,7 @@ void FPKGameplayTags::InitializeNativeGameplayTags()
 	
 	Instance.Attributes_Damage_PhysicalDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
 		FName("Attributes.Damage.PhysicalDamage"), TEXT("Value used to hold incoming physical damage during calculation."));
-
-
-	//------------------------------Resistance-----------------------
-	Instance.Attributes_Resistance_FireResistance = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Attributes.Damage.FireResistance"), TEXT("Fire Damage Resistance of the character."));
-	Instance.Attributes_DamageTypesToResistanceMap.Add(Instance.Attributes_Damage_FireDamage , Instance.Attributes_Resistance_FireResistance);
-
-	Instance.Attributes_Resistance_PhysicalResistance = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Attributes.Damage.PhysicalResistance"), TEXT("Physical Damage Resistance of the character."));
-	Instance.Attributes_DamageTypesToResistanceMap.Add(Instance.Attributes_Damage_PhysicalDamage , Instance.Attributes_Resistance_PhysicalResistance);
+	
 	
 	// -----------------------------Effects--------------------------
 	Instance.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag( 

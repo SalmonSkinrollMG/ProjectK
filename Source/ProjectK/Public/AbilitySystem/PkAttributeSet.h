@@ -131,6 +131,10 @@ public:
 	FGameplayAttributeData ElementalResistance;
 	ATTRIBUTE_ACCESSORS(UPkAttributeSet, ElementalResistance);
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_PhysicalResistance, Category = "Resistance Attributes")
+	FGameplayAttributeData PhysicalResistance;
+	ATTRIBUTE_ACCESSORS(UPkAttributeSet, PhysicalResistance);
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resolve, Category = "Primary Attributes")
 	FGameplayAttributeData Resolve;
 	ATTRIBUTE_ACCESSORS(UPkAttributeSet, Resolve);
@@ -193,17 +197,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UPkAttributeSet, MaxHealth);
-
-	/*
-	 * Resistance Attributes
-	 */
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_FireResistance, Category = "Resistance Attributes")
-	FGameplayAttributeData FireResistance;
-	ATTRIBUTE_ACCESSORS(UPkAttributeSet, FireResistance);
-
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_PhysicalResistance, Category = "Resistance Attributes")
-	FGameplayAttributeData PhysicalResistance;
-	ATTRIBUTE_ACCESSORS(UPkAttributeSet, PhysicalResistance);
 	
 	/*
 	 * Internal / Temporary Attributes
@@ -232,6 +225,7 @@ public:
 	UFUNCTION() void OnRep_MaxStamina(const FGameplayAttributeData& OldValue) const;
 	UFUNCTION() void OnRep_EnergyRecharge(const FGameplayAttributeData& OldValue) const;
 	UFUNCTION() void OnRep_ElementalResistance(const FGameplayAttributeData& OldValue) const;
+	UFUNCTION() void OnRep_PhysicalResistance(const FGameplayAttributeData& OldValue) const;
 	UFUNCTION() void OnRep_Resolve(const FGameplayAttributeData& OldValue) const;
 	UFUNCTION() void OnRep_MaxResolve(const FGameplayAttributeData& OldValue) const;
 
@@ -249,11 +243,6 @@ public:
 	// Vital
 	UFUNCTION() void OnRep_Health(const FGameplayAttributeData& OldValue) const;
 	UFUNCTION() void OnRep_MaxHealth(const FGameplayAttributeData& OldValue) const;
-
-	//Resistance
-
-	UFUNCTION() void OnRep_FireResistance(const FGameplayAttributeData& OldValue) const;
-	UFUNCTION() void OnRep_PhysicalResistance(const FGameplayAttributeData& OldValue) const;
 
 	//-----------------------------------Helpers-------------------------------------------------
 	

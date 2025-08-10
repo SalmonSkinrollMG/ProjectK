@@ -31,6 +31,7 @@ UPkAttributeSet::UPkAttributeSet()
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_Stamina, GetStaminaAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_EnergyRecharge, GetEnergyRechargeAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_ElementalResistance, GetElementalResistanceAttribute);
+	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_PhysicalResistance, GetPhysicalResistanceAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_ResolveCost, GetResolveAttribute);
 
 	// ----------------- Secondary -----------------
@@ -43,11 +44,6 @@ UPkAttributeSet::UPkAttributeSet()
 	TagToAttributeMap.Add(GameplayTags.Attribute_Secondary_ShieldBonus, GetShieldBonusAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Secondary_CooldownReduction, GetCooldownReductionAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Secondary_DamageReduction, GetDamageReductionAttribute);
-
-	//------------------Vital----------------------
-
-	TagToAttributeMap.Add(GameplayTags.Attributes_Resistance_FireResistance, GetFireResistanceAttribute);
-	TagToAttributeMap.Add(GameplayTags.Attributes_Resistance_PhysicalResistance, GetPhysicalResistanceAttribute);
 }
 
 void UPkAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -69,6 +65,7 @@ void UPkAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, MaxStamina, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, EnergyRecharge, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, ElementalResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, PhysicalResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, Resolve, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, MaxResolve, COND_None, REPNOTIFY_Always);
 
@@ -86,19 +83,12 @@ void UPkAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 	// Vital
 	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
-
-	// Vital
-	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, FireResistance, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UPkAttributeSet, PhysicalResistance, COND_None, REPNOTIFY_Always);
 }
 
 void UPkAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
 }
-
-
-
 
 void UPkAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
@@ -207,6 +197,10 @@ void UPkAttributeSet::OnRep_ElementalResistance(const FGameplayAttributeData& Ol
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, ElementalResistance, OldValue);
 }
+void UPkAttributeSet::OnRep_PhysicalResistance(const FGameplayAttributeData& OldValue) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, PhysicalResistance, OldValue);
+}
 void UPkAttributeSet::OnRep_Resolve(const FGameplayAttributeData& OldValue) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, Resolve, OldValue);
@@ -262,14 +256,6 @@ void UPkAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue) co
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, MaxHealth, OldValue);
 }
 
-void UPkAttributeSet::OnRep_FireResistance(const FGameplayAttributeData& OldValue) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, Health, OldValue);
-}
-void UPkAttributeSet::OnRep_PhysicalResistance(const FGameplayAttributeData& OldValue) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UPkAttributeSet, MaxHealth, OldValue);
-}
 
 
 void UPkAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data , FEffectProperties& Properties)
