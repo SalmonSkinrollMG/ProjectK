@@ -27,7 +27,7 @@ public:
 	FGameplayTag Attribute_Primary_Stamina;
 	FGameplayTag Attribute_Primary_EnergyRecharge;
 	FGameplayTag Attribute_Primary_ElementalResistance;
-	FGameplayTag Attributes_Primary_PhysicalResistance;
+	FGameplayTag Attribute_Primary_PhysicalResistance;
 	FGameplayTag Attribute_Primary_ResolveCost;
 
 	// ----------------- Secondary Attributes -----------------
@@ -52,12 +52,12 @@ public:
 	FGameplayTag InputTag_Key_NUM_4;
 
 	// --------------------------- Damage Tags ---------------------------
-	FGameplayTag Attributes_Damage_DamageDelt;
-	FGameplayTag Attributes_Damage_FireDamage;
-	FGameplayTag Attributes_Damage_PhysicalDamage;
+	FGameplayTag Damage;
+	FGameplayTag Damage_ElementalDamage;
+	FGameplayTag Damage_PhysicalDamage;
 	
 	
-	TMap<FGameplayTag , FGameplayTag> Attributes_DamageTypesToResistanceMap;
+	TMap<FGameplayTag , FGameplayTag> DamageTypesToResistanceMap;
 
 	//-----------------------------Effects Tags ----------------------------
 	FGameplayTag Effects_HitReact;

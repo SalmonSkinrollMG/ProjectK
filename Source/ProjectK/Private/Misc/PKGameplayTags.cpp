@@ -43,17 +43,15 @@ void FPKGameplayTags::InitializeNativeGameplayTags()
 	Instance.Attribute_Primary_EnergyRecharge = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attribute.Primary.EnergyRecharge"), TEXT("Rate at which resolve/energy is regenerated"));
 	
+	Instance.Attribute_Primary_ResolveCost = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attribute.Primary.ResolveCost"), TEXT("Energy cost to use ultimate abilities"));
+	
 	//------------------------------Resistance-----------------------
 	Instance.Attribute_Primary_ElementalResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attribute.Primary.ElementalResistance"), TEXT("Resistance against elemental damage"));
-	Instance.Attributes_DamageTypesToResistanceMap.Add(Instance.Attributes_Damage_FireDamage , Instance.Attribute_Primary_ElementalResistance);
 
-	Instance.Attributes_Primary_PhysicalResistance = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Attributes.Damage.PhysicalResistance"), TEXT("Physical Damage Resistance of the character."));
-	Instance.Attributes_DamageTypesToResistanceMap.Add(Instance.Attributes_Damage_PhysicalDamage , Instance.Attributes_Primary_PhysicalResistance);
-
-	Instance.Attribute_Primary_ResolveCost = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attribute.Primary.ResolveCost"), TEXT("Energy cost to use ultimate abilities"));
+	Instance.Attribute_Primary_PhysicalResistance = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Attribute.Primary.PhysicalResistance"), TEXT("Physical Damage Resistance of the character."));
 
 	// ----------------- Secondary Attributes -----------------
 
@@ -106,17 +104,22 @@ void FPKGameplayTags::InitializeNativeGameplayTags()
 
 	
 	// ----------------- Damage Attributes-----------------
-	Instance.Attributes_Damage_DamageDelt = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Attributes.Damage.DamageDelt"), TEXT("Value used to hold incoming damage during calculation."));
+	Instance.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Damage"), TEXT("Value used to hold incoming damage during calculation."));
 
-	Instance.Attributes_Damage_FireDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Attributes.Damage.FireDamage"), TEXT("Value used to hold incoming fire damage during calculation."));
+	Instance.Damage_ElementalDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Damage.ElementalDamage"), TEXT("Value used to hold incoming Elemental damage during calculation."));
 	
-	Instance.Attributes_Damage_PhysicalDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
-		FName("Attributes.Damage.PhysicalDamage"), TEXT("Value used to hold incoming physical damage during calculation."));
+	Instance.Damage_PhysicalDamage = UGameplayTagsManager::Get().AddNativeGameplayTag( 
+		FName("Damage.PhysicalDamage"), TEXT("Value used to hold incoming physical damage during calculation."));
 	
 	
 	// -----------------------------Effects--------------------------
 	Instance.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag( 
 		FName("Internal.Effects.HitReact"), TEXT("Tag to grant the actor during hit , This will trigger hit reaction events"));
+
+
+	//---------------------------------Resistance to Damage Map -----------------------
+	Instance.DamageTypesToResistanceMap.Add(Instance.Damage_ElementalDamage , Instance.Attribute_Primary_ElementalResistance);
+	Instance.DamageTypesToResistanceMap.Add(Instance.Damage_PhysicalDamage , Instance.Attribute_Primary_PhysicalResistance);
 }

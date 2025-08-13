@@ -31,6 +31,11 @@ void APKPlayerController::ShowDamageOnClient_Implementation(float DamageNumber, 
 	{
 		/*
 		 * @TODO : Look for other conditions.
+		 *
+		 * Currently , Doesnt Show for
+		 * Doesn't show for Server in Dedicated server Setup but shows for Server
+		 * Shows for Server and Clients in Listen server Setup
+		 * Shows for Standalone Mode.
 		 */
 		return;
 	}
@@ -200,25 +205,28 @@ void APKPlayerController::AbilityInputReleased(FGameplayTag Tag)
 	}
 	if (!bTargeting && !bShiftKeyPressed)
 	{
-		const APawn* ControlledPawn = GetPawn();
-		if (ControlledPawn && FollowTime <= ShortPressedThreshold)
+		if (const APawn* ControlledPawn = GetPawn())
 		{
-			if (UNavigationPath* NavigationPath = UNavigationSystemV1::FindPathToLocationSynchronously(this , ControlledPawn->GetActorLocation(), CachedDestination))
+			float DistanceToDestination = (ControlledPawn->GetActorLocation() - CachedDestination).Length();
+			if (DistanceToDestination >= AutoRunAcceptanceRadius && FollowTime <= ShortPressedThreshold)
 			{
-				Spline->ClearSplinePoints();
-				for (const FVector NavPoint : NavigationPath->PathPoints)
+				if (UNavigationPath* NavigationPath = UNavigationSystemV1::FindPathToLocationSynchronously(this , ControlledPawn->GetActorLocation(), CachedDestination))
 				{
-					Spline->AddSplinePoint(NavPoint , ESplineCoordinateSpace::World);
-					//DrawDebugSphere(GetWorld() , NavPoint , 3 , 10 , FColor::Purple , false , 5.0f);
+					Spline->ClearSplinePoints();
+					for (const FVector NavPoint : NavigationPath->PathPoints)
+					{
+						Spline->AddSplinePoint(NavPoint , ESplineCoordinateSpace::World);
+						DrawDebugSphere(GetWorld() , NavPoint , 3 , 10 , FColor::Purple , false , 5.0f);
+					}
+					CachedDestination = NavigationPath->PathPoints.Last();
+					bAutoRunning = true;
 				}
-				CachedDestination = NavigationPath->PathPoints.Last();
-				bAutoRunning = true;
 			}
 		}
+		
 		FollowTime = false;
 		bTargeting = false;
 	}
-	
 }
 
 void APKPlayerController::AbilityInputHeld(const FGameplayTag Tag)
@@ -237,6 +245,11 @@ void APKPlayerController::AbilityInputHeld(const FGameplayTag Tag)
 		{
 			AbilitySystemComponent->AbilityInputTagHeld(Tag);
 		}
+		if (APawn* ControlledPawn = GetPawn())
+		{
+			const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+			ControlledPawn->AddMovementInput(WorldDirection);
+		}
 	}
 	else
 	{
@@ -244,11 +257,6 @@ void APKPlayerController::AbilityInputHeld(const FGameplayTag Tag)
 		if (CursorHit.bBlockingHit)
 		{
 			CachedDestination = CursorHit.ImpactPoint;
-		}
-		if (APawn* ControlledPawn = GetPawn())
-		{
-			const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-			ControlledPawn->AddMovementInput(WorldDirection);
 		}
 	}
 }

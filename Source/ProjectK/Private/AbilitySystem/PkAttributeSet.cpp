@@ -31,7 +31,7 @@ UPkAttributeSet::UPkAttributeSet()
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_Stamina, GetStaminaAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_EnergyRecharge, GetEnergyRechargeAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_ElementalResistance, GetElementalResistanceAttribute);
-	TagToAttributeMap.Add(GameplayTags.Attributes_Primary_PhysicalResistance, GetPhysicalResistanceAttribute);
+	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_PhysicalResistance, GetPhysicalResistanceAttribute);
 	TagToAttributeMap.Add(GameplayTags.Attribute_Primary_ResolveCost, GetResolveAttribute);
 
 	// ----------------- Secondary -----------------
@@ -134,6 +134,10 @@ void UPkAttributeSet::ShowFloatingText(const FEffectProperties& EffectProperties
 	//Ignoring Self damage
 	if (EffectProperties.SourceCharacter != EffectProperties.TargetCharacter)
 	{
+		/*
+		 *For Damage text only for Source , Get EFeectProperties.SourceCharacter->GetController();
+		 */
+		
 		//Showing damage Numbers for all the player controller in the game . So both the players would be able to see the damage number
 		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 		{

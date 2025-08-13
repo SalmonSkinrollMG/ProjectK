@@ -21,6 +21,7 @@ public:
 	                         FAggregatorEvaluateParameters EvaluateParams, FPKGameplayEffectContext* PKEffectContext) const;
 	float CalculateTargetDefenceMultiplier(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
 	                                      FAggregatorEvaluateParameters EvaluateParams) const;
+	void GetFinalDamageAfterResistance(float& Damage, float& Resistance) const;
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 	

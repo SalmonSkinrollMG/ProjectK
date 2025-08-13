@@ -16,6 +16,12 @@ struct PKDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Attack)
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CritRate)
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CritDamage)
+
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ElementalResistance)
+	DECLARE_ATTRIBUTE_CAPTUREDEF(PhysicalResistance)
+
+	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
+	
 	PKDamageStatics()
 	{
 		//2
@@ -25,6 +31,18 @@ struct PKDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,Attack, Source , false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,CritRate, Source , false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,CritDamage, Source , false);
+
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,ElementalResistance, Target , false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UPkAttributeSet ,PhysicalResistance, Target , false);
+
+		const FPKGameplayTags& Tags = FPKGameplayTags::Get();
+
+		TagsToCaptureDefs.Add(Tags.Attribute_Primary_Defense , DefenseDef);
+		TagsToCaptureDefs.Add(Tags.Attribute_Primary_Attack , AttackDef);
+		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CritRate , CritRateDef);
+		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CritDamage, CritDamageDef);
+		TagsToCaptureDefs.Add(Tags.Attribute_Primary_ElementalResistance, ElementalResistanceDef);
+		TagsToCaptureDefs.Add(Tags.Attribute_Primary_PhysicalResistance, PhysicalResistanceDef);
 	}
 };
 
@@ -41,6 +59,9 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(GetDamageStatics().AttackDef);
 	RelevantAttributesToCapture.Add(GetDamageStatics().CritRateDef);
 	RelevantAttributesToCapture.Add(GetDamageStatics().CritDamageDef);
+
+	RelevantAttributesToCapture.Add(GetDamageStatics().ElementalResistanceDef);
+	RelevantAttributesToCapture.Add(GetDamageStatics().PhysicalResistanceDef);
 }
 
 void UExecCalc_Damage::CalculateCriticalHit(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FAggregatorEvaluateParameters EvaluateParams, FPKGameplayEffectContext* PKEffectContext) const
@@ -74,6 +95,15 @@ float UExecCalc_Damage::CalculateTargetDefenceMultiplier(const FGameplayEffectCu
 	return UKismetMathLibrary::SafeDivide(100 , 100 + DefenceInTarget);
 }
 
+void UExecCalc_Damage::GetFinalDamageAfterResistance(float& Damage, float& Resistance) const
+{
+	Resistance = FMath::Clamp(Resistance, 0.0f, 100.0f);
+
+	Resistance = 1.0f - Resistance / 100.0f; // Multiplier of damage reduction
+	Resistance = FMath::Max(Resistance, 0.05f); // This is to make sure that the damage is not zero at any cost , even when resistance is 100%. (0.05 is 5% of base) .
+	Damage *= Resistance;
+}
+
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
                                               FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
@@ -90,16 +120,26 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	FAggregatorEvaluateParameters EvaluateParams;
 	EvaluateParams.SourceTags = SourceTags;
 	EvaluateParams.TargetTags = TargetTags;
-
-	//This Damage is got from the projectile ability of a particular Damage type , where we take the damage based on curve.
-	float Damage = Spec.GetSetByCallerMagnitude(FPKGameplayTags::Get().Attributes_Damage_DamageDelt);
-
-	for (const TTuple DamageTypeToResistance : FPKGameplayTags::Get().Attributes_DamageTypesToResistanceMap)
+	
+	
+	float Damage = 0.0f;
+	for (const TTuple<FGameplayTag, FGameplayTag> DamageTypeToResistance : FPKGameplayTags::Get().DamageTypesToResistanceMap)
 	{
 		//Here we can Decrease/Increase the Damage based on the Damage Type applied.
 		//GetSetByCallerMagnitude has the check for Tags . The Damage Value of this particular tag will be added to the damage.
-		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeToResistance.Key);
-		Damage += DamageTypeValue;
+
+		const FGameplayTag DamageTag= DamageTypeToResistance.Key;
+		const FGameplayTag ResistanceTag = DamageTypeToResistance.Value;
+
+		//Getting the Damage of this attack.
+		Damage += Spec.GetSetByCallerMagnitude(DamageTag);
+		
+		checkf(PKDamageStatics().TagsToCaptureDefs.Contains(ResistanceTag), TEXT("Can't capture an invalid Damage, Add Resistance type %s this calc"),*ResistanceTag.ToString());
+		const FGameplayEffectAttributeCaptureDefinition CaptureDefinition = PKDamageStatics().TagsToCaptureDefs[ResistanceTag];
+
+		float Resistance = 0.0f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDefinition , EvaluateParams , Resistance);		
+		GetFinalDamageAfterResistance(Damage, Resistance);
 	}
 
 	//Get PKEffectContext.
@@ -116,7 +156,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		//This Curve table damage could be the weapom's Damage and has nothing to do with player stats.
 		//For now excluding the curve table and using the player stat(Attack) for causing damage.
 		//Final Damage should be Damage = WeaponAttack + Base attack (Both are based on level)
-		Damage = BaseAttack * CalculateCritDamage(ExecutionParams, EvaluateParams, PKEffectContext) * CalculateTargetDefenceMultiplier(ExecutionParams, EvaluateParams);
+		Damage += BaseAttack * CalculateCritDamage(ExecutionParams, EvaluateParams, PKEffectContext) * CalculateTargetDefenceMultiplier(ExecutionParams, EvaluateParams);
 	}
 	
 	const FGameplayModifierEvaluatedData ModifierEvaluatedData(UPkAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive , Damage);
