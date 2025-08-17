@@ -4,12 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "PKCharacterBase.h"
+#include "AbilitySystem/CharacterClassInfo.h"
 #include "Interface/EnemyInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "PKEnemeyCharacter.generated.h"
 
 
+class APKAIController;
 class UWidgetComponent;
+class UBehaviorTree;
 
 UCLASS()
 class PROJECTK_API APKEnemeyCharacter : public APKCharacterBase, public IEnemyInterface
@@ -55,8 +58,9 @@ public:
 
 	virtual void Die() override;
 
-protected:
+	virtual void PossessedBy(AController* NewController) override;
 
+protected:
 	virtual void BeginPlay() override;
 
 //Enemy interface for higlightling the enemy.
@@ -65,7 +69,19 @@ protected:
 
 	UPROPERTY(EditAnywhere , BlueprintReadOnly ,Category = "Enemy Attribute")
 	int Level = 0;
+	
+	UPROPERTY(EditAnywhere , BlueprintReadOnly ,Category = "Enemy Attribute")
+	ECharacterClass CharacterClass = ECharacterClass::Elementalist;
 
+	
 	void OnHealthUpdated(const FOnAttributeChangeData& Data) const;
 	void OnMaxHealthUpdated(const FOnAttributeChangeData& Data) const;
+
+	virtual void InitializeDefaultAttributes() override;
+
+	UPROPERTY(EditAnywhere , Category="AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<APKAIController> PKAIController;
 };

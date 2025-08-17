@@ -1,4 +1,5 @@
 // Copyright (c) 2025, AlphaCentauriGames. All rights reserved.
+// Copyright (c) 2025, AlphaCentauriGames. All rights reserved.
 
 #pragma once
 
@@ -63,7 +64,7 @@ protected:
 	UAnimMontage* HitReactMontage;
 
 	UFUNCTION(BlueprintCallable)
-	void InitializeDefaultAttributes();
+	virtual void InitializeDefaultAttributes();
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> DefaultAttribute);
 
 	UPROPERTY(EditAnywhere , BlueprintReadOnly , Category= "GamePlayAbilitySystem|Abilities")

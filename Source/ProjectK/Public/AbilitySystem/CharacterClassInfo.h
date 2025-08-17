@@ -13,9 +13,8 @@ UENUM(BlueprintType)
 enum class ECharacterClass : uint8
 {
 	Elementalist,
-	Necromancer,
-	Titan,
-	Ranger
+	Meele,
+	Ranged
 };
 
 

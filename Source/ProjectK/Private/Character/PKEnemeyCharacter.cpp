@@ -5,6 +5,9 @@
 #include "AbilitySystem/PKAbilitySystemComponent.h"
 #include "AbilitySystem/PkAttributeSet.h"
 #include "AbilitySystem/BlueprintLibrary/PkAblilitySystemLibrary.h"
+#include "AI/PKAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Misc/PKGameplayTags.h"
@@ -20,6 +23,14 @@ APKEnemeyCharacter::APKEnemeyCharacter()
 	AbilitySystemComponent = CreateDefaultSubobject<UPKAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	//Controller setup
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	
 
 	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponent"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
@@ -37,6 +48,23 @@ void APKEnemeyCharacter::Die()
 {
 	SetLifeSpan(LifeSpan);
 	Super::Die();
+}
+
+void APKEnemeyCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (!HasAuthority())
+	{
+		return;
+	}
+	PKAIController = Cast<APKAIController>(NewController);
+	PKAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	PKAIController->RunBehaviorTree(BehaviorTree);
+	PKAIController->GetBlackboardComponent()->SetValueAsBool(FName("bIsHitReacting"), false);
+	if (CharacterClass != ECharacterClass::Meele)
+	{
+		PKAIController->GetBlackboardComponent()->SetValueAsBool(FName("bIsRangedCharacter"), true);
+	}
 }
 
 void APKEnemeyCharacter::BeginPlay()
@@ -75,6 +103,7 @@ void APKEnemeyCharacter::OnHitReactTagAdded(const FGameplayTag IncomingTag, int3
 {
 	bHitReacting = count > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.0f : BaseWalkSpeed;
+	PKAIController->GetBlackboardComponent()->SetValueAsBool(FName("bIsHitReacting"), bHitReacting);
 }
 
 void APKEnemeyCharacter::HandleDeath()
@@ -113,3 +142,8 @@ void APKEnemeyCharacter::InitAbilityActorInfo()
 	InitializeDefaultAttributes();
 }
 
+
+void APKEnemeyCharacter::InitializeDefaultAttributes()
+{
+	UPkAblilitySystemLibrary::InitializeDefaultAttributes(GetWorld() , CharacterClass , Level , AbilitySystemComponent);
+}

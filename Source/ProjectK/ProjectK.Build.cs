@@ -10,7 +10,7 @@ public class ProjectK : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" , "UMG" , "EnhancedInput" , "GameplayAbilities" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayTags" , "GameplayTasks" , "NavigationSystem" , "Niagara"});
+		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayTags" , "GameplayTasks" , "NavigationSystem" , "Niagara" , "AIModule"});
 		
 		//PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		

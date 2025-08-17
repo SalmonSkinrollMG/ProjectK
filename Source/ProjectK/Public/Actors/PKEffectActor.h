@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
-#include "PKAbilityActor.generated.h"
+#include "PKEffectActor.generated.h"
 
 class UGameplayEffect;
 class USphereComponent;
@@ -28,12 +28,12 @@ enum class EEffectRemovalPolicy : uint8
 };
 
 UCLASS()
-class PROJECTK_API APKAbilityActor : public AActor
+class PROJECTK_API APKEffectActor : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	APKAbilityActor();
+	APKEffectActor();
 
 protected:
 	virtual void BeginPlay() override;
@@ -47,8 +47,15 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnEndOverlap(AActor* TargetActor);
 
+	
+	/*
+	 *Currently Not using
+	 */
 	UPROPERTY(EditAnywhere , BlueprintReadWrite , Category = "Effect Properties")
-	bool bDestroyOnEffectRemoval = false;
+	bool bDestroyOnEffectApplication = false;
+
+	UPROPERTY(EditAnywhere , BlueprintReadWrite , Category = "Effect Properties")
+	bool bCanAffectEnemies = false;
 
 	// Infinite
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect Properties | Infinite")

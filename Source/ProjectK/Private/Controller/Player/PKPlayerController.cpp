@@ -218,6 +218,10 @@ void APKPlayerController::AbilityInputReleased(FGameplayTag Tag)
 						Spline->AddSplinePoint(NavPoint , ESplineCoordinateSpace::World);
 						DrawDebugSphere(GetWorld() , NavPoint , 3 , 10 , FColor::Purple , false , 5.0f);
 					}
+					if (NavigationPath->PathPoints.IsEmpty())
+					{
+						return;
+					}
 					CachedDestination = NavigationPath->PathPoints.Last();
 					bAutoRunning = true;
 				}

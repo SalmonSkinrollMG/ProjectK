@@ -1,23 +1,27 @@
 ﻿// Copyright (c) 2025, AlphaCentauriGames. All rights reserved.
 
 
-#include "Actors/PKAbilityActor.h"
+#include "Actors/PKEffectActor.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 
-APKAbilityActor::APKAbilityActor()
+APKEffectActor::APKEffectActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("Root"));
 }
 
-void APKAbilityActor::BeginPlay()
+void APKEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void APKAbilityActor::ApplyGameplayEffectToTarget(AActor* TargetActor,TSubclassOf<UGameplayEffect> InGameplayEffect)
+void APKEffectActor::ApplyGameplayEffectToTarget(AActor* TargetActor,TSubclassOf<UGameplayEffect> InGameplayEffect)
 {
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bCanAffectEnemies)
+	{
+		return;
+	}
 	UAbilitySystemComponent* ASCTarget = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	if (ASCTarget == nullptr)
 	{
@@ -33,26 +37,39 @@ void APKAbilityActor::ApplyGameplayEffectToTarget(AActor* TargetActor,TSubclassO
 	{
 		ActiveGameplayEffects.Add(ASCTarget , GameplayEffectHandle);
 	}
+
+	if (!bIsInfinite)
+	{
+		Destroy();
+	}
 }
 
-void APKAbilityActor::OnBeginOverlap(AActor* TargetActor)
+void APKEffectActor::OnBeginOverlap(AActor* TargetActor)
 {
-	if (InstantGameplayApplyPolicy == EEffectApplyPolicy::ApplyOnOverlap || InstantGameplayApplyPolicy == EEffectApplyPolicy::None)
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bCanAffectEnemies)
+	{
+		return;
+	}
+	if (InstantGameplayEffect && InstantGameplayApplyPolicy == EEffectApplyPolicy::ApplyOnOverlap)
 	{
 		ApplyGameplayEffectToTarget(TargetActor , InstantGameplayEffect);
 	}
-	if (DurationGameplayApplyPolicy == EEffectApplyPolicy::ApplyOnOverlap || DurationGameplayApplyPolicy == EEffectApplyPolicy::None)
+	if (DurationGameplayEffect && DurationGameplayApplyPolicy == EEffectApplyPolicy::ApplyOnOverlap)
 	{
 		ApplyGameplayEffectToTarget(TargetActor , DurationGameplayEffect);
 	}
-	if (InfiniteGameplayApplyPolicy == EEffectApplyPolicy::ApplyOnOverlap || InfiniteGameplayApplyPolicy == EEffectApplyPolicy::None)
+	if (InfiniteGameplayEffect && InfiniteGameplayApplyPolicy == EEffectApplyPolicy::ApplyOnOverlap)
 	{
 		ApplyGameplayEffectToTarget(TargetActor , InfiniteGameplayEffect);
 	}
 }
 
-void APKAbilityActor::OnEndOverlap(AActor* TargetActor)
+void APKEffectActor::OnEndOverlap(AActor* TargetActor)
 {
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bCanAffectEnemies)
+	{
+		return;
+	}
 	if (InstantGameplayApplyPolicy == EEffectApplyPolicy::ApplyOnEndOverlap)
 	{
 		ApplyGameplayEffectToTarget(TargetActor , InstantGameplayEffect);
